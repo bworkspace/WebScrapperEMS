@@ -15,23 +15,23 @@ app.use(express.json());
         if(index === 0) return true;
         const td = $(element).find("td");
         const nodeName = $(td[0]).text().toString().trim();
-        const eventCount = $(td[3]).text();
+        const eventCount = $(td[3]).text().trim();
 
         if(eventCount > 0 && (nodeName.search("expired") > -1)){
             ar.push({
                 name : nodeName.replace(exclude,'').toString(),
-                count : eventCount.toString()
+                count : eventCount
             })
         }
     })
-    return JSON.stringify(ar);
+    return `${JSON.stringify(ar)}, ${url}`;
 }
 
 const getUrl = (req,res) => {
     const url = ("https://" + req.params.ip + "/" + req.params.page + "." + req.params.extension).toString();
     const exclude = (req.params.exclude).toString();
     async function callForValue(){
-        res.send(`final : ${await main(url,exclude)}`);
+        res.end(await main(url,exclude));
     }
     callForValue();
 }
